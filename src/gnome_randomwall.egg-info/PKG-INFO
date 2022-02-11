@@ -1,0 +1,18 @@
+Metadata-Version: 2.1
+Name: gnome-randomwall
+Version: 0.0.1
+Summary: Random wallpaper selector for GNOME desktop
+Home-page: UNKNOWN
+Author: Dan Jacob
+Author-email: danjac2018@gmail.com
+License: MIT
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Requires-Python: >=3.9
+
+UNKNOWN
+
