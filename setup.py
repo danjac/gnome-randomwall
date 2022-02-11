@@ -8,9 +8,7 @@ setup(
     version=VERSION,
     author="Dan Jacob",
     author_email="danjac2018@gmail.com",
-    entry_points={
-        "console_scripts": ["randomwall=randomwall.randomwall:main"]
-    },
+    entry_points={"console_scripts": ["randomwall=randomwall.randomwall:main"]},
     # url="https://github.com/randomwall",
     description="Random wallpaper selector for GNOME desktop",
     license="MIT",
