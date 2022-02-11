@@ -1,9 +1,9 @@
 This script will change your desktop wallpaper in a GNOME environment.
 
-# INSTALL
+### INSTALL
 
 > python setup.py install --user
 
-# USAGE
+### USAGE
 
 > python -m randomwall
