@@ -8,3 +8,4 @@ This script will change your desktop wallpaper in a GNOME environment.
 
 > python -m randomwall
 
+Local directory is assumed to be *$HOME/Pictures/Wallpapers*.
