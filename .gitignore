@@ -1,6 +1,7 @@
 *.pyc
 *.egg
 *.egg-info
+build
 
 *.lock
 
