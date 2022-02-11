@@ -1,5 +1,3 @@
-#!/usr/bin/python3
-
 import argparse
 import glob
 import os
@@ -366,7 +364,3 @@ def save_wallpaper(urls: List) -> None:
         resp = requests.get(url)
         with open(path, "wb") as fp:
             fp.write(resp.content)
-
-
-if __name__ == "__main__":
-    main()
