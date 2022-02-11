@@ -1,8 +1,0 @@
-setup.py
-src/gnome_randomwall.egg-info/PKG-INFO
-src/gnome_randomwall.egg-info/SOURCES.txt
-src/gnome_randomwall.egg-info/dependency_links.txt
-src/gnome_randomwall.egg-info/entry_points.txt
-src/gnome_randomwall.egg-info/top_level.txt
-src/randomwall/__init__.py
-src/randomwall/randomwall.py
