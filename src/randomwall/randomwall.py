@@ -14,7 +14,7 @@ Path = Union[pathlib.Path, str]
 home = pathlib.Path().home()
 wallpaper_dir = home / "Pictures" / "Wallpapers"
 # wallpaper_dir = home / "Pictures" / "Favorites"
-config_dir = home / ".randomwall"
+config_dir = home / ".config" / "randomwall"
 
 history_file = config_dir / "history"
 blacklist_file = config_dir / "blacklist"
