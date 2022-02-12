@@ -34,7 +34,6 @@ extensions = (
     "svg",
 )
 
-api_choices = ("desktoppr", "bing")
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -71,8 +70,7 @@ parser.add_argument(
 parser.add_argument(
     "-f",
     "--favorite",
-    help="Add current wallpaper to favorites. If from API will download image "
-    "to wallpaper directory before adding to favorites",
+    help="Add current wallpaper to favorites.",
     action="store_true",
 )
 
@@ -82,9 +80,6 @@ parser.add_argument(
 
 parser.add_argument(
     "-c", "--current", help="Prints current wallpaper", action="store_true"
-)
-parser.add_argument(
-    "-a", "--api", help="Select wallpaper from API", choices=api_choices
 )
 
 
@@ -125,10 +120,6 @@ def main() -> None:
         delete_blacklist()
         return
 
-    if args.api:
-        choose_api_wallpaper(args.api, args.notify)
-        return
-
     choose_wallpaper(args.notify)
 
 
@@ -136,25 +127,6 @@ def get_wallpaper_dir() -> pathlib.Path:
     if dirname := config.get("wallpaper_dir"):
         pathlib.Path(dirname)
     return wallpaper_dir
-
-
-def choose_api_wallpaper(api: str, notify: bool) -> None:
-
-    actions = {"desktoppr": desktoppr, "bing": bing}
-
-    try:
-        url = actions[api](notify)
-    except requests.RequestException as e:
-        sys.stderr.write(str(e))
-        sys.exit(1)
-
-    add_wallpaper_to_file(url, history_file)
-    set_gnome_background(url)
-
-    if notify:
-        send_notify("Random wallpaper", url)
-    else:
-        sys.stdout.write(url + "\n")
 
 
 def get_wallpapers_from_file(filename: Path) -> List[str]:
@@ -252,25 +224,6 @@ def choose_wallpaper(notify: bool) -> None:
         send_notify("Random wallpaper", filename)
     else:
         sys.stdout.write(filename + "\n")
-
-
-def bing(notify: bool) -> str:
-
-    response = requests.get(
-        "http://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=en-US"
-    )
-    response.raise_for_status()
-    basename = response.json()["images"][0]["urlbase"]
-    return f"https://www.bing.com{basename}_1920x1080.jpg"
-
-
-def desktoppr(notify: bool) -> str:
-
-    response = requests.get(
-        "https://api.desktoppr.co/1/wallpapers/random?safe=all"
-    )  # noqa
-    response.raise_for_status()
-    return response.json()["response"]["image"]["url"]
 
 
 def set_gnome_background(url: str) -> None:
