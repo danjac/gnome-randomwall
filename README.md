@@ -21,10 +21,6 @@ Local directory is assumed to be *$HOME/Pictures/Wallpapers*. If you want to cha
 
 ### TIMER
 
-Default is set to every 5 minutes; edit *randomwall.timer* accordingly.
-
-**Note**: local systemd directory may vary per distro
-
 ```bash
 
 cp systemd/* ~/.local/share/systemd/user
@@ -38,4 +34,9 @@ systemctl --user status randomwall.service
 systemctl --user status randomwall.timer
 
 ```
+
+Default is set to every 5 minutes; edit *randomwall.timer* accordingly.
+
+**Note**: local systemd directory may vary per distro
+
 
