@@ -1,0 +1,10 @@
+[Unit]
+Description=RandomWall service
+After=network.target
+
+[Service]
+Type=oneshot
+ExecStart=python -m randomwall
+
+[Install]
+WantedBy=default.target
