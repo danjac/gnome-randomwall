@@ -1,5 +1,6 @@
 import argparse
 import glob
+import json
 import os
 import pathlib
 import random
@@ -13,7 +14,6 @@ Path = Union[pathlib.Path, str]
 
 home = pathlib.Path().home()
 wallpaper_dir = home / "Pictures" / "Wallpapers"
-# wallpaper_dir = home / "Pictures" / "Favorites"
 config_dir = home / ".config" / "randomwall"
 
 history_file = config_dir / "history"
@@ -25,12 +25,10 @@ extensions = (
     "JPG",
     "PNG",
     "SVG",
-    # "WEBP",
     "jpeg",
     "jpg",
     "png",
     "svg",
-    # "webp",
 )
 
 api_choices = ("desktoppr", "bing")
@@ -127,6 +125,22 @@ def main() -> None:
     choose_wallpaper(args.notify)
 
 
+def get_config(name: str, default: Optional[str] = None) -> dict:
+    path = pathlib.Path(config_dir / "config.json")
+    cfg = {}
+
+    if path.exists():
+        cfg = json.load(path.open("r"))
+
+    return cfg.setdefault(name, default)
+
+
+def get_wallpaper_dir() -> pathlib.Path:
+    if dirname := get_config("wallpaper_dir"):
+        pathlib.Path(dirname)
+    return wallpaper_dir
+
+
 def choose_api_wallpaper(api: str, notify: bool) -> None:
 
     actions = {"desktoppr": desktoppr, "bing": bing}
@@ -174,7 +188,7 @@ def get_wallpapers() -> List[str]:
     wallpapers = []
 
     for ext in extensions:
-        wallpapers.extend(glob.glob(str(wallpaper_dir / "*.%s") % ext))
+        wallpapers.extend(glob.glob(str(get_wallpaper_dir() / "*.%s") % ext))
 
     return wallpapers
 
@@ -308,7 +322,7 @@ def fave_current_wallpaper(notify: bool) -> None:
     if is_url(wallpaper):
         response = requests.get(wallpaper)
         wallpaper = str(
-            wallpaper_dir / pathlib.Path(urlparse(wallpaper).path).name
+            get_wallpaper_dir() / pathlib.Path(urlparse(wallpaper).path).name
         )  # noqa
         with open(wallpaper, "wb") as fp:
             fp.write(response.content)
@@ -360,7 +374,7 @@ def save_wallpaper(urls: List) -> None:
     for url in urls:
         parts = urlparse(url)
         filename = os.path.basename(parts.path)
-        path = wallpaper_dir / filename
+        path = get_wallpaper_dir() / filename
         resp = requests.get(url)
         with open(path, "wb") as fp:
             fp.write(resp.content)
