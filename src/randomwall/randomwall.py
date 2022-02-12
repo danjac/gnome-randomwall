@@ -5,17 +5,20 @@ import os
 import pathlib
 import random
 import sys
-from typing import List, Optional, Union
+from typing import Dict, List, Optional, Union
 from urllib.parse import quote, urlparse
 
 import requests
 
 Path = Union[pathlib.Path, str]
 
+config: Dict = {}
+
 home = pathlib.Path().home()
 wallpaper_dir = home / "Pictures" / "Wallpapers"
 config_dir = home / ".config" / "randomwall"
 
+config_file = config_dir / "config.json"
 history_file = config_dir / "history"
 blacklist_file = config_dir / "blacklist"
 favorites_file = config_dir / "favorites"
@@ -86,8 +89,12 @@ parser.add_argument(
 
 
 def main() -> None:
-    if not os.path.exists(config_dir):
-        os.makedirs(config_dir)
+    global config
+
+    config_dir.mkdir(exist_ok=True)
+
+    if config_file.exists():
+        config = json.load(config_file.open("r"))
 
     args = parser.parse_args()
 
@@ -125,18 +132,8 @@ def main() -> None:
     choose_wallpaper(args.notify)
 
 
-def get_config(name: str, default: Optional[str] = None) -> dict:
-    path = pathlib.Path(config_dir / "config.json")
-    cfg = {}
-
-    if path.exists():
-        cfg = json.load(path.open("r"))
-
-    return cfg.setdefault(name, default)
-
-
 def get_wallpaper_dir() -> pathlib.Path:
-    if dirname := get_config("wallpaper_dir"):
+    if dirname := config.get("wallpaper_dir"):
         pathlib.Path(dirname)
     return wallpaper_dir
 
