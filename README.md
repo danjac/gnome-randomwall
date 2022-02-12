@@ -1,4 +1,4 @@
-This script will change your desktop wallpaper in a GNOME environment.
+This script will change your wallpaper in a GNOME desktop environment. Requires Python 3.9+.
 
 ### INSTALL
 
