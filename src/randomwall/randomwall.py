@@ -187,6 +187,7 @@ def check_history(wallpapers: List[str]) -> List[str]:
         choices = wallpapers
         delete_file(history_file)
 
+    # favorites can be picked even if in history
     choices += get_favorites()
 
     return list(set(choices))
