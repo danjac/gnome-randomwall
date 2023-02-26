@@ -25,10 +25,10 @@ blacklist_file = config_dir / "blacklist"
 favorites_file = config_dir / "favorites"
 
 extensions = (
-    "JPEG",
-    "JPG",
-    "PNG",
-    "SVG",
+    "jpeg",
+    "jpg",
+    "png",
+    "svg",
 )
 
 extensions += tuple(s.upper() for s in extensions)
@@ -226,7 +226,7 @@ def set_gnome_background(url: str) -> None:
         "org.gnome.desktop.background picture-uri-dark",
         "org.gnome.desktop.screensaver picture-uri",
     ):
-        os.system(f"gsettings {setting} {url}")
+        os.system(f"gsettings set {setting} {url}")
 
 
 def delete_blacklist() -> None:
