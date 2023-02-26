@@ -1,4 +1,5 @@
 import argparse
+import contextlib
 import glob
 import json
 import os
@@ -28,12 +29,9 @@ extensions = (
     "JPG",
     "PNG",
     "SVG",
-    "jpeg",
-    "jpg",
-    "png",
-    "svg",
 )
 
+extensions += tuple(s.upper() for s in extensions)
 
 parser = argparse.ArgumentParser()
 parser.add_argument(
@@ -94,7 +92,6 @@ def main() -> None:
     args = parser.parse_args()
 
     if args.save:
-
         save_wallpaper(args.save)
         return
 
@@ -142,10 +139,8 @@ def get_wallpapers_from_file(filename: Path) -> List[str]:
 
 
 def delete_file(filename: Path) -> None:
-    try:
+    with contextlib.suppress(OSError):
         os.remove(filename)
-    except OSError:
-        pass
 
 
 def add_wallpaper_to_file(wallpaper: str, filename: Path) -> None:
@@ -175,7 +170,6 @@ def get_history() -> List[str]:
 
 
 def check_history(wallpapers: List[str]) -> List[str]:
-
     if not wallpapers:
         return []
 
@@ -198,11 +192,10 @@ def check_blacklist(wallpapers: List[str]) -> List[str]:
 
 
 def send_notify(title: str, msg: str) -> None:
-    os.system("notify-send '%s' '%s' " % (title, msg))
+    os.system(f"notify-send '{title}' '{msg}'")
 
 
 def choose_wallpaper(notify: bool) -> None:
-
     wallpapers = check_history(check_blacklist(get_wallpapers()))
 
     if not wallpapers:
@@ -217,7 +210,7 @@ def choose_wallpaper(notify: bool) -> None:
 
     add_wallpaper_to_file(wallpaper, history_file)
 
-    set_gnome_background("file:///%s" % quote(wallpaper))
+    set_gnome_background(f"file:///{quote(wallpaper)}")
 
     filename = os.path.basename(wallpaper)
 
@@ -228,14 +221,12 @@ def choose_wallpaper(notify: bool) -> None:
 
 
 def set_gnome_background(url: str) -> None:
-
-    # DESKTOP
-    os.system("gsettings set org.gnome.desktop.background picture-uri %s" % url)  # noqa
-
-    # LOCK SCREEN
-    os.system(
-        "gsettings set org.gnome.desktop.screensaver picture-uri %s" % url
-    )  # noqa
+    for setting in (
+        "org.gnome.desktop.background picture-uri",
+        "org.gnome.desktop.background picture-uri-dark",
+        "org.gnome.desktop.screensaver picture-uri",
+    ):
+        os.system(f"gsettings {setting} {url}")
 
 
 def delete_blacklist() -> None:
@@ -283,12 +274,12 @@ def fave_current_wallpaper(notify: bool) -> None:
     if notify:
         send_notify(
             "Random wallpaper",
-            "%s added to favorites" % os.path.basename(wallpaper),
+            f"{os.path.basename(wallpaper)} added to favorites",
         )
 
 
 def is_url(wallpaper: Optional[str]) -> bool:
-    return wallpaper and wallpaper.startswith("http")
+    return bool(wallpaper) and wallpaper.startswith("http")
 
 
 def blacklist_current_wallpaper(notify: bool, delete: bool) -> None:
@@ -303,14 +294,13 @@ def blacklist_current_wallpaper(notify: bool, delete: bool) -> None:
     if notify:
         send_notify(
             "Random wallpaper",
-            "%s added to blacklist" % os.path.basename(wallpaper),
+            f"{os.path.basename(wallpaper)} added to blacklist",
         )
 
     if (
         delete
         and input(
-            "Are you sure you want to PERMANENTLY delete the file %s (Y/N)? "
-            % wallpaper
+            f"Are you sure you want to PERMANENTLY delete the file {wallpaper} (Y/N)? "  # noqa
         ).lower()
         == "y"
     ):
